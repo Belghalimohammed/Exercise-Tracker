@@ -127,15 +127,7 @@ app.get('/api/users/:_id/logs', (req, res) => {
        }
     }
    
-    obj = {
-      from : new Date(from).toDateString() ,
-      to : new Date(to).toDateString() ,
-      username: users[_id],
-      count:exercices[_id].length,
-      _id : _id,
-      log : getLogs(_id,fromstamp,tostamp,limit)
-    
-     }
+  
    
   } else {
     obj = {
