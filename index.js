@@ -69,58 +69,40 @@ app.post('/api/users/:_id/exercises', (req, res) => {
   return res.json(n);
 
 });
+function getExercisesForUser(userId, from, to, limit) {
+  let userExercises = exercises[userId] || [];
+  
+  // Filter exercises based on date range and limit
+  let filteredExercises = userExercises.filter(exercise => {
+    const exerciseDate = new Date(exercise.date);
+    return exerciseDate >= new Date(from) && exerciseDate <= new Date(to);
+  }).slice(0, limit);
 
-function getLogs(id,from,to,limit) {
-  let list = [];
-  let i = 0;
-  exercices[id].forEach(element => {
-    date = new Date(element.date).getTime();
-    if(date >= from && date <= to && i<limit){
-      list.push({description: element.description,
-        duration: parseInt(element.duration),
-        date: element.date})
-      i++;
-    }
-  });
-
-  return list;
+  return filteredExercises.map(exercise => ({
+    description: exercise.description,
+    duration: exercise.duration,
+    date: new Date(exercise.date).toDateString()
+  }));
 }
-
 app.get('/api/users/:_id/logs', (req, res) => {
-  let { _id } = req.params;
-  const { from, to, limit } = req.query;
-  let obj ;
-  if(from && to && limit) {
-    from = new Date(from).getTime();
-    to = new Date(to).getTime();
+  const userId = req.params._id;
+  const from = req.query.from || new Date(0).toISOString().substring(0, 10);
+  const to = req.query.to || new Date(Date.now()).toISOString().substring(0, 10);
+  const limit = Number(req.query.limit) || 0;
 
-    obj = {
-      username: users[_id],
-      count:exercices[_id].length,
-      _id : _id,
-      log : getLogs(_id,from,to,limit)
-    
-     }
-  } else {
-    obj = {
-      username: users[_id],
-      count:exercices[_id].length,
-      _id : _id,
-      log : exercices[_id].map((e) => ({
-        description: e.description,
-        duration: parseInt(e.duration),
-        date: e.date
-        
-      }))
-     }
-  }
+  let user = {
+    _id: userId,
+    username: users[userId]
+  };
 
-   
+  let log = getExercisesForUser(userId, from, to, limit);
 
-  return res.json(obj);
-
+  res.json({
+    ...user,
+    count: log.length,
+    log: log
+  });
 });
-
 
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log('Your app is listening on port ' + listener.address().port)
