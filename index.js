@@ -52,7 +52,7 @@ app.post('/api/users/:_id/exercises', (req, res) => {
   n = {
     username: users[_id],
     description: description,
-    duration: duration,
+    duration: parseInt(duration),
     date: date.toDateString(),
     _id: _id
   }
