@@ -75,7 +75,7 @@ function getLogs(id,from,to,limit) {
   let i = 0;
   exercices[id].forEach(element => {
     date = new Date(element.date).getTime();
-    if(date > from && date < to && i<limit){
+    if(date >= from && date <= to && i<limit){
       list.push({description: element.description,
         duration: parseInt(element.duration),
         date: element.date})
