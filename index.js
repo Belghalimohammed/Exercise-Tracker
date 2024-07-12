@@ -70,7 +70,7 @@ app.post('/api/users/:_id/exercises', (req, res) => {
 
 });
 
-function getLogs(id,from,to,limit) {
+function getLogsLimit(id,from,to,limit) {
   let list = [];
   let i = 0;
   exercices[id].forEach(element => {
@@ -112,7 +112,7 @@ app.get('/api/users/:_id/logs', (req, res) => {
         username: users[_id],
         count:exercices[_id].length,
         _id : _id,
-        log : getLogs(_id,fromstamp,tostamp,limit)
+        log : getLogsLimit(_id,fromstamp,tostamp,limit)
       
        }
     } else {
