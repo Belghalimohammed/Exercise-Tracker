@@ -69,60 +69,55 @@ app.post('/api/users/:_id/exercises', (req, res) => {
   return res.json(n);
 
 });
-function getLogs(id, from, to, limit) {
+
+function getLogs(id,from,to,limit) {
   let list = [];
   let i = 0;
-  
   exercices[id].forEach(element => {
-    const date = new Date(element.date).getTime();
-    if (date >= from && date <= to && i < limit) {
-      list.push({
-        description: element.description,
+    date = new Date(element.date).getTime();
+    if(date >= from && date <= to && i<limit){
+      list.push({description: element.description,
         duration: parseInt(element.duration),
-        date: element.date
-      });
+        date: element.date})
       i++;
     }
   });
 
-  return list; // Return the filtered list of logs
+  return list;
 }
 
 app.get('/api/users/:_id/logs', (req, res) => {
-  const { _id } = req.params;
-  let { from, to, limit } = req.query;
-
-  // Convert from/to to timestamps if provided
-  if (from && to) {
+  let { _id } = req.params;
+  const { from, to, limit } = req.query;
+  let obj ;
+  if(from && to && limit) {
     from = new Date(from).getTime();
     to = new Date(to).getTime();
-  }
 
-  let obj;
-
-  if (from && to && limit) {
     obj = {
       username: users[_id],
-      count: exercices[_id].length,
-      _id: _id,
-      log: getLogs(_id, from, to, limit) // Call getLogs function with parameters
-    };
-  } else {
-    obj = {
-      username: users[_id],
-      count: exercices[_id].length,
-      _id: _id,
-      log: exercices[_id].map(e => ({
-        description: e.description,
-        duration: parseInt(e.duration),
-        date: e.date
-      }))
-    };
+      count:exercices[_id].length,
+      _id : _id,
+      log : getLogs(_id,from,to,limit)
+    
+     }
   }
+
+   obj = {
+    username: users[_id],
+    count:exercices[_id].length,
+    _id : _id,
+    log : exercices[_id].map((e) => ({
+      description: e.description,
+      duration: parseInt(e.duration),
+      date: e.date
+      
+    }))
+   }
 
   return res.json(obj);
-});
 
+});
 
 
 const listener = app.listen(process.env.PORT || 3000, () => {
