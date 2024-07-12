@@ -84,9 +84,9 @@ function getLogs(id,from,to,limit) {
   });
 }
 
-app.get('/api/users/:_id/logs/:from?/:to?/:limit?', (req, res) => {
-  let { _id,from,to,limit } = req.params;
-  
+app.get('/api/users/:_id/logs', (req, res) => {
+  let { _id } = req.params;
+  const { from, to, limit } = req.query;
   let obj ;
   if(from && to && limit) {
     from = new Date(from).getTime();
