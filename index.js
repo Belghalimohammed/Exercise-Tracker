@@ -64,19 +64,9 @@ app.post('/api/users/:_id/exercises', (req, res) => {
   }
   
 
-  let obj = {
-    username: users[_id],
-    count:exercices[_id].length,
-    _id : _id,
-    log : exercices[_id].map((e) => ({
-      description: e.description,
-      duration: parseInt(e.duration),
-      date: e.date
-      
-    }))
-   }
+  
 
-  return res.json(obj);
+  return res.json(n);
 
 });
 
