@@ -101,19 +101,21 @@ app.get('/api/users/:_id/logs', (req, res) => {
       log : getLogs(_id,from,to,limit)
     
      }
+  } else {
+    obj = {
+      username: users[_id],
+      count:exercices[_id].length,
+      _id : _id,
+      log : exercices[_id].map((e) => ({
+        description: e.description,
+        duration: parseInt(e.duration),
+        date: e.date
+        
+      }))
+     }
   }
 
-   obj = {
-    username: users[_id],
-    count:exercices[_id].length,
-    _id : _id,
-    log : exercices[_id].map((e) => ({
-      description: e.description,
-      duration: parseInt(e.duration),
-      date: e.date
-      
-    }))
-   }
+   
 
   return res.json(obj);
 
