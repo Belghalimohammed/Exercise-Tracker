@@ -81,8 +81,7 @@ function getLogs(id,from,to,limit) {
         date: element.date})
       i++;
     }
-  });https://3000-freecodecam-boilerplate-vvfwdstr8dg.ws-eu115.gitpod.io/api/users/6691afa56468b7f694beaed9/logs?from=2022-10-19&to=2025-12-20&limti=5
-
+  });
   return list;
 }
 
