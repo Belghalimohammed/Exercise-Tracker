@@ -94,7 +94,6 @@ function getLogs(id,from,to) {
       list.push({description: element.description,
         duration: parseInt(element.duration),
         date: element.date})
-      i++;
     }
   });
   return list;
