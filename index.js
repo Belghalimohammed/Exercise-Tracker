@@ -70,81 +70,43 @@ app.post('/api/users/:_id/exercises', (req, res) => {
 
 });
 
-function getLogsLimit(id,from,to,limit) {
-  let list = [];
-  let i = 0;
-  exercices[id].forEach(element => {
-    date = new Date(element.date).getTime();
-    if( date >= from && date <= to && i<limit  ){
-      list.push({description: element.description,
-        duration: parseInt(element.duration),
-        date: element.date})
-      i++;
-    }
-  });
-  return list;
-}
 
-function getLogs(id,from,to) {
-  let list = [];
-  exercices[id].forEach(element => {
-    date = new Date(element.date).getTime();
-    if( date >= from && date <= to ){
-      list.push({description: element.description,
-        duration: parseInt(element.duration),
-        date: element.date})
-    }
-  });
-  return list;
-}
 
 app.get('/api/users/:_id/logs', (req, res) => {
   let { _id } = req.params;
   let { from, to, limit } = req.query;
   let obj ;
-  if(from && to ) {
-    fromstamp = new Date(from).getTime();
-    tostamp = new Date(to).getTime();
-    if(limit) {
-      obj = {
-        from : new Date(from).toDateString() ,
-        to : new Date(to).toDateString() ,
-        username: users[_id],
-        count:exercices[_id].length,
-        _id : _id,
-        log : getLogsLimit(_id,fromstamp,tostamp,limit)
-      
-       }
-    } else {
-      obj = {
-        from : new Date(from).toDateString() ,
-        to : new Date(to).toDateString() ,
-        username: users[_id],
-        count:exercices[_id].length,
-        _id : _id,
-        log : getLogs(_id,fromstamp,tostamp)
-      
-       }
-    }
-   
-  
-   
-  } else {
-    obj = {
-      username: users[_id],
-      count:exercices[_id].length,
-      _id : _id,
-      log : exercices[_id].map((e) => ({
-        description: e.description,
-        duration: parseInt(e.duration),
-        date: e.date
-        
-      }))
-     }
-  }
+ 
 
-   
+  obj = {
+    username: users[_id],
+    from:from,
+    to:to,
+    count:exercices[_id].length,
+    _id : _id,
+    log : exercices[_id].map((e) => ({
+      description: e.description,
+      duration: parseInt(e.duration),
+      date: e.date
+      
+    }))
+   };
 
+
+   if(from) {
+    obj.log = obj.log.filter(e => new Date(e.date).getTime() >= new Date(from).getTime() );
+
+   }
+   if(to) {
+    obj.log = obj.log.filter(e => new Date(e.date).getTime() <= new Date(to).getTime() );
+
+   }
+   if(limit) {
+    obj.log = obj.log.slice(0,limit)
+   }
+   
+ 
+  obj.count = obj.log.length;
   return res.json(obj);
 
 });
