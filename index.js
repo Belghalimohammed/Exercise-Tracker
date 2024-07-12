@@ -70,13 +70,38 @@ app.post('/api/users/:_id/exercises', (req, res) => {
 
 });
 
+function getLogs(id,from,to,limit) {
+  let list = [];
+  let i = 0;
+  exercices[id].forEach(element => {
+    date = new Date(element.date).getTime();
+    if(date > from && date < to && i<limit){
+      list.push({description: element.description,
+        duration: parseInt(element.duration),
+        date: element.date})
+      i++;
+    }
+  });
+}
 
-app.get('/api/users/:_id/logs', (req, res) => {
-  const { _id } = req.params;
+app.get('/api/users/:_id/logs/:from?/:to?/:limit?', (req, res) => {
+  let { _id,from,to,limit } = req.params;
   
- 
+  let obj ;
+  if(from && to && limit) {
+    from = new Date(from).getTime();
+    to = new Date(to).getTime();
 
-  let obj = {
+    obj = {
+      username: users[_id],
+      count:exercices[_id].length,
+      _id : _id,
+      log : getLogs(_id,from,to,limit)
+    
+     }
+  }
+
+   obj = {
     username: users[_id],
     count:exercices[_id].length,
     _id : _id,
