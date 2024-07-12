@@ -75,14 +75,28 @@ function getLogs(id,from,to,limit) {
   let i = 0;
   exercices[id].forEach(element => {
     date = new Date(element.date).getTime();
-    if(date >= from && date <= to && i<limit){
+    if( date >= from && date <= to && i<limit  ){
+      list.push({description: element.description,
+        duration: parseInt(element.duration),
+        date: element.date})
+      i++;
+    }
+  });https://3000-freecodecam-boilerplate-vvfwdstr8dg.ws-eu115.gitpod.io/api/users/6691afa56468b7f694beaed9/logs?from=2022-10-19&to=2025-12-20&limti=5
+
+  return list;
+}
+
+function getLogs(id,from,to) {
+  let list = [];
+  exercices[id].forEach(element => {
+    date = new Date(element.date).getTime();
+    if( date >= from && date <= to ){
       list.push({description: element.description,
         duration: parseInt(element.duration),
         date: element.date})
       i++;
     }
   });
-
   return list;
 }
 
@@ -90,10 +104,31 @@ app.get('/api/users/:_id/logs', (req, res) => {
   let { _id } = req.params;
   let { from, to, limit } = req.query;
   let obj ;
-  if(from && to && limit) {
+  if(from && to ) {
     fromstamp = new Date(from).getTime();
     tostamp = new Date(to).getTime();
-
+    if(limit) {
+      obj = {
+        from : new Date(from).toDateString() ,
+        to : new Date(to).toDateString() ,
+        username: users[_id],
+        count:exercices[_id].length,
+        _id : _id,
+        log : getLogs(_id,fromstamp,tostamp,limit)
+      
+       }
+    } else {
+      obj = {
+        from : new Date(from).toDateString() ,
+        to : new Date(to).toDateString() ,
+        username: users[_id],
+        count:exercices[_id].length,
+        _id : _id,
+        log : getLogs(_id,fromstamp,tostamp)
+      
+       }
+    }
+   
     obj = {
       from : new Date(from).toDateString() ,
       to : new Date(to).toDateString() ,
@@ -103,6 +138,7 @@ app.get('/api/users/:_id/logs', (req, res) => {
       log : getLogs(_id,fromstamp,tostamp,limit)
     
      }
+   
   } else {
     obj = {
       username: users[_id],
